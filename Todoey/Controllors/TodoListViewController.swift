@@ -105,26 +105,26 @@ class TodoListViewController: UITableViewController {
     }
     
     //MARK: - Delete Items
-//    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-//        let deleteItemAction = UIContextualAction(style: .normal, title: "delete") { (actions, UIView, success) in
-//            
-//            print("Delete Item")
-//            success(true)
-//            
-//        }
-//        
-//        deleteItemAction.title = "DELETE"
-//        deleteItemAction.backgroundColor = .red
-//        
-//
-//        context.delete(itemArray[indexPath.row])
-//        itemArray.remove(at: indexPath.row)
-//        
-//        loadItems()
-//        
-//        return UISwipeActionsConfiguration(actions: [deleteItemAction])
-//        
-//    }
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteItemAction = UIContextualAction(style: .normal, title: "delete") { (actions, UIView, success) in
+
+            print("Delete Item")
+            success(true)
+
+        }
+
+        deleteItemAction.title = "DELETE"
+        deleteItemAction.backgroundColor = .red
+
+
+        context.delete(itemArray[indexPath.row])
+        itemArray.remove(at: indexPath.row)
+
+        loadItems()
+
+        return UISwipeActionsConfiguration(actions: [deleteItemAction])
+
+    }
     
     
     // MARK: - Model Manupulation Methods
