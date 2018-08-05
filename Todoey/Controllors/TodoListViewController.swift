@@ -9,7 +9,7 @@
 import UIKit
 import RealmSwift
 
-class TodoListViewController: UITableViewController {
+class TodoListViewController: SwipeTableViewController {
     
     var todoItems: Results<Item>?
     
@@ -27,12 +27,13 @@ class TodoListViewController: UITableViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        
     }
 
     //MARK: - Tableview Datasource Methods
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
         if let item = todoItems?[indexPath.row] {
         
@@ -59,7 +60,6 @@ class TodoListViewController: UITableViewController {
         if let item = todoItems?[indexPath.row] {
             do {
                 try realm.write {
-//                    realm.delete(item)
                     item.done = !item.done
                 }
             } catch {
@@ -112,30 +112,6 @@ class TodoListViewController: UITableViewController {
         
     }
     
-    //MARK: - Delete Items
-    
-    
-//    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-//        let deleteItemAction = UIContextualAction(style: .normal, title: "delete") { (actions, UIView, success) in
-//
-//            print("Delete Item")
-//            success(true)
-//
-//        }
-//
-//        deleteItemAction.title = "DELETE"
-//        deleteItemAction.backgroundColor = .red
-//
-//
-//
-//        return UISwipeActionsConfiguration(actions: [deleteItemAction])
-//
-//    }
-    
-    
-    // MARK: - Model Manupulation Methods
-    
-
     
     func loadItems() {
 
@@ -144,7 +120,21 @@ class TodoListViewController: UITableViewController {
         tableView.reloadData()
     }
     
+    //MARK: - Delete Data From Swipe
     
+    override func updateModel(at indexPath: IndexPath) {
+        
+        if let itemForDeletion = self.todoItems?[indexPath.row] {
+            do {
+                try self.realm.write {
+                    self.realm.delete(itemForDeletion)
+                }
+            } catch {
+                print("Error deleting item, \(error)")
+            }
+        }
+        
+    }
     
     
 
