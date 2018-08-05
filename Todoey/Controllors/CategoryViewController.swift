@@ -28,6 +28,7 @@ class CategoryViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
         
         cell.textLabel?.text = categories?[indexPath.row].name ?? "Add New Category"
+        
         return cell
         
     }
