@@ -27,13 +27,6 @@ class TodoListViewController: UITableViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        //print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
-        
-        
-//        if let item = defaults.array(forKey: "TodoListArray") as? [Item] {
-//            itemArray = item
-//        }
-        
     }
 
     //MARK: - Tableview Datasource Methods
@@ -43,9 +36,9 @@ class TodoListViewController: UITableViewController {
         
         if let item = todoItems?[indexPath.row] {
         
-        cell.textLabel?.text = item.title
-        
-        cell.accessoryType = item.done  ? .checkmark : .none
+            cell.textLabel?.text = item.title
+            cell.accessoryType = item.done  ? .checkmark : .none
+            
         } else {
             cell.textLabel?.text = "Add New Todoey Item"
         }
@@ -66,6 +59,7 @@ class TodoListViewController: UITableViewController {
         if let item = todoItems?[indexPath.row] {
             do {
                 try realm.write {
+//                    realm.delete(item)
                     item.done = !item.done
                 }
             } catch {
@@ -95,6 +89,7 @@ class TodoListViewController: UITableViewController {
                     try self.realm.write {
                         let newItem = Item()
                         newItem.title = textField.text!
+                        newItem.dateCreated = Date()
                         currentCategory.items.append(newItem)
                     }
                 } catch {
@@ -118,6 +113,8 @@ class TodoListViewController: UITableViewController {
     }
     
     //MARK: - Delete Items
+    
+    
 //    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 //        let deleteItemAction = UIContextualAction(style: .normal, title: "delete") { (actions, UIView, success) in
 //
@@ -130,10 +127,6 @@ class TodoListViewController: UITableViewController {
 //        deleteItemAction.backgroundColor = .red
 //
 //
-//        context.delete(itemArray[indexPath.row])
-//        itemArray.remove(at: indexPath.row)
-//
-//        loadItems()
 //
 //        return UISwipeActionsConfiguration(actions: [deleteItemAction])
 //
@@ -159,31 +152,28 @@ class TodoListViewController: UITableViewController {
 
 //MARK: - Search bar methods
 
-//extension TodoListViewController: UISearchBarDelegate {
-//    
-//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-//        
-//        let request : NSFetchRequest<Item> = Item.fetchRequest()
-//        
-//        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
-//        
-//        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-//        
-//        loadItems(with: request, predicate: predicate)
-//
-//    }
-//    
-//    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-//        if searchBar.text?.count == 0 {
-//            loadItems()
-//            DispatchQueue.main.async {
-//                searchBar.resignFirstResponder()
-//            }
-//            
-//        }
-//        
-//        
-//    }
-//    
-//}
+extension TodoListViewController: UISearchBarDelegate {
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        todoItems = todoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "dateCreated", ascending: true)
+        
+        tableView.reloadData()
+        
+    }
+    
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text?.count == 0 {
+            loadItems()
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+            }
+            
+        }
+        
+        
+    }
+    
+}
 
